@@ -696,6 +696,7 @@
           <ul class="footer-links">
             <li><button type="button" data-open-dialog="privacy-dialog">Privacy policy</button></li>
             <li><button type="button" data-open-dialog="cookie-dialog">Cookie policy</button></li>
+            <li><button type="button" data-cookie-prefs>Preferenze cookie</button></li>
           </ul>
         </div>
       </div>
@@ -719,19 +720,28 @@
       <p>Questa informativa spiega quali dati personali vengono trattati quando visiti Ti penso, ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 (“GDPR”) e del D.Lgs. 196/2003.</p>
       <ul>
         <li>Ti penso non ha moduli, newsletter, account o carrello: non ti chiediamo alcun dato.</li>
-        <li>Non usiamo cookie di profilazione, strumenti di statistica o pubblicità mirata.</li>
+        <li>Usiamo Google Analytics solo se lo accetti, per statistiche sulle visite. Niente profilazione né pubblicità mirata.</li>
         <li>Gli acquisti avvengono su Amazon.it, che tratta i tuoi dati in modo autonomo.</li>
       </ul>
       <h3>1. Titolare del trattamento</h3>
       <p>Titolare del trattamento è <span data-owner="name"></span>. Per domande o richieste sulla privacy puoi scrivere a <span data-owner="email"></span>.</p>
       <h3>2. Dati di navigazione (hosting)</h3>
       <p>Il sito è ospitato da Vercel Inc. I server registrano automaticamente alcuni dati tecnici necessari a mostrare le pagine e a proteggerle da abusi: indirizzo IP, data e ora, pagina richiesta, tipo di browser e dispositivo. Base giuridica: legittimo interesse a offrire un sito funzionante e sicuro (art. 6.1.f GDPR). I dati sono conservati per i periodi tecnici del fornitore. Vercel opera anche negli Stati Uniti, con le garanzie previste dagli artt. 45 e 46 GDPR (<a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">privacy policy di Vercel</a>).</p>
-      <h3>3. Foto dei prodotti e link affiliati Amazon</h3>
+      <h3>3. Statistiche di visita (Google Analytics)</h3>
+      <p>Se lo accetti dal banner, usiamo Google Analytics 4, un servizio di Google Ireland Limited (Gordon House, Barrow Street, Dublino 4, Irlanda), per capire quante persone visitano il sito, quali prodotti interessano di più e da dove arrivano i visitatori. Se rifiuti, Google Analytics non viene caricato e il sito funziona normalmente.</p>
+      <ul>
+        <li><strong>Dati trattati:</strong> identificativi pseudonimi salvati nei cookie <code>_ga</code>, pagine visitate, clic sui pulsanti “Vedi su Amazon”, sito di provenienza, tipo di dispositivo e browser, posizione approssimativa (paese e città) ricavata dall'indirizzo IP. Google Analytics 4 non registra né conserva gli indirizzi IP.</li>
+        <li><strong>Base giuridica:</strong> il tuo consenso (art. 6, par. 1, lett. a GDPR), che puoi revocare in qualsiasi momento da “Preferenze cookie” in fondo alla pagina, senza conseguenze sulla navigazione.</li>
+        <li><strong>Impostazioni:</strong> Google Signals e personalizzazione degli annunci sono disattivati. I dati servono solo a statistiche sul sito e non vengono usati per pubblicità.</li>
+        <li><strong>Conservazione:</strong> i dati legati ai cookie sono conservati in Google Analytics per 2 mesi; i report restano solo in forma aggregata.</li>
+        <li><strong>Ruolo e trasferimento fuori dall'UE:</strong> Google agisce come responsabile del trattamento. I dati possono essere trasferiti a Google LLC negli Stati Uniti, che aderisce al Data Privacy Framework UE‑USA (decisione di adeguatezza, art. 45 GDPR). Maggiori dettagli su <a href="https://business.safety.google/privacy/" target="_blank" rel="noopener noreferrer">come Google tratta i dati</a>.</li>
+      </ul>
+      <h3>4. Foto dei prodotti e link affiliati Amazon</h3>
       <p>Le foto dei prodotti sono caricate dai server di Amazon: per mostrarle, il tuo browser comunica ad Amazon il tuo indirizzo IP e i dati tecnici della richiesta.</p>
       <p>Ti penso partecipa al Programma Affiliazione Amazon EU, un programma di affiliazione che consente ai siti di percepire una commissione pubblicitaria pubblicizzando e fornendo link al sito Amazon.it. Quando clicchi su “Vedi su Amazon” vai su Amazon.it, che tratta i tuoi dati come titolare autonomo secondo la propria <a href="https://www.amazon.it/gp/help/customer/display.html?nodeId=201909010" target="_blank" rel="noopener noreferrer">informativa sulla privacy</a>. Terze parti, inclusa Amazon, possono mostrare contenuti, raccogliere informazioni direttamente dai visitatori e installare o riconoscere cookie sui loro browser. Da Amazon riceviamo solo report aggregati sulle vendite, che non permettono di identificarti.</p>
-      <h3>4. Memoria locale del browser</h3>
-      <p>Il sito salva nel tuo browser (localStorage) due informazioni tecniche: i prodotti che aggiungi alla tua lista e il fatto che hai chiuso l'avviso sui cookie. Restano solo sul tuo dispositivo, non vengono inviate a nessun server e puoi cancellarle dalle impostazioni del browser.</p>
-      <h3>5. I tuoi diritti</h3>
+      <h3>5. Memoria locale del browser</h3>
+      <p>Il sito salva nel tuo browser (localStorage) due informazioni tecniche: i prodotti che aggiungi alla tua lista e la tua scelta sui cookie. Restano solo sul tuo dispositivo, non vengono inviate a nessun server e puoi cancellarle dalle impostazioni del browser.</p>
+      <h3>6. I tuoi diritti</h3>
       <p>Puoi chiedere accesso, rettifica, cancellazione, limitazione, portabilità e opporti al trattamento (artt. 15–22 GDPR) scrivendo all'indirizzo indicato al punto 1. Puoi anche proporre reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" target="_blank" rel="noopener noreferrer">www.garanteprivacy.it</a>).</p>
     </div>
   </dialog>
@@ -744,16 +754,20 @@
     </div>
     <div class="policy-body">
       <p class="policy-meta">Ultimo aggiornamento: <span data-policy-date></span></p>
-      <p>Redatta ai sensi dell'art. 122 del Codice privacy e delle Linee guida del Garante sui cookie del 10 giugno 2021. <strong>Ti penso non installa cookie di profilazione, di statistica o di marketing</strong>: usa solo strumenti tecnici, che non richiedono consenso.</p>
+      <p>Redatta ai sensi dell'art. 122 del Codice privacy e delle Linee guida del Garante sui cookie del 10 giugno 2021. Ti penso usa strumenti tecnici, che non richiedono consenso, e <strong>Google Analytics solo se lo accetti</strong>. Nessun cookie di profilazione o di marketing.</p>
       <div class="policy-table-wrap">
         <table class="policy-table">
           <thead><tr><th scope="col">Nome</th><th scope="col">Tipo</th><th scope="col">Finalità</th><th scope="col">Durata</th></tr></thead>
           <tbody>
             <tr><td><code>tipenso-lista</code></td><td>Tecnico, localStorage, prima parte</td><td>Ricorda i prodotti salvati nella tua lista</td><td>Finché non lo cancelli</td></tr>
-            <tr><td><code>tipenso-cookie-notice</code></td><td>Tecnico, localStorage, prima parte</td><td>Ricorda che hai chiuso l'avviso sui cookie</td><td>Finché non lo cancelli</td></tr>
+            <tr><td><code>tipenso-cookie-consenso</code></td><td>Tecnico, localStorage, prima parte</td><td>Ricorda la tua scelta sui cookie (accetta o rifiuta le statistiche)</td><td>Finché non la cambi o la cancelli dal browser</td></tr>
+            <tr><td><code>_ga</code></td><td>Statistica, cookie di Google Analytics (prima parte), <strong>solo con il tuo consenso</strong></td><td>Distingue i visitatori in forma pseudonima per contare le visite</td><td>2 anni</td></tr>
+            <tr><td><code>_ga_&lt;ID&gt;</code></td><td>Statistica, cookie di Google Analytics (prima parte), <strong>solo con il tuo consenso</strong></td><td>Mantiene lo stato della visita</td><td>2 anni</td></tr>
           </tbody>
         </table>
       </div>
+      <h3>Come cambiare la tua scelta</h3>
+      <p>Puoi accettare o rifiutare le statistiche in qualsiasi momento da <button class="link-button" type="button" data-cookie-prefs>Preferenze cookie</button>, il link che trovi anche in fondo alla pagina. Se revochi il consenso, Google Analytics si ferma e i suoi cookie vengono cancellati. Puoi anche installare il <a href="https://tools.google.com/dlpage/gaoptout?hl=it" target="_blank" rel="noopener noreferrer">componente del browser per la disattivazione di Google Analytics</a>.</p>
       <h3>Quando clicchi su un prodotto</h3>
       <p>Su Amazon.it valgono i cookie di Amazon, anche per attribuire l'acquisto al nostro link, secondo l'<a href="https://www.amazon.it/gp/help/customer/display.html?nodeId=201890250" target="_blank" rel="noopener noreferrer">informativa su cookie e pubblicità di Amazon</a>.</p>
       <h3>Titolare e contatti</h3>
@@ -762,12 +776,14 @@
   </dialog>
 
   <section class="cookie-banner" id="cookie-banner" aria-labelledby="cookie-banner-title" hidden>
-    <button class="cookie-close" type="button" id="cookie-close" aria-label="Chiudi l'avviso sui cookie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
-    <h2 id="cookie-banner-title">Niente cookie di profilazione</h2>
-    <p>Ti penso salva solo informazioni tecniche nel tuo browser, come la tua lista dei desideri. Se clicchi su un prodotto, su Amazon.it valgono i cookie di Amazon.</p>
+    <button class="cookie-close" type="button" id="cookie-close" aria-label="Chiudi l'avviso sui cookie e rifiuta le statistiche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 id="cookie-banner-title">Cookie e statistiche</h2>
+    <p>Usiamo strumenti tecnici necessari al sito e, solo se accetti, Google Analytics per contare le visite e capire quali prodotti piacciono di più. Niente pubblicità né profilazione. Puoi cambiare scelta quando vuoi da “Preferenze cookie” in fondo alla pagina.</p>
     <div class="cookie-actions">
-      <button class="btn" type="button" id="cookie-ok">Ho capito</button>
+      <button class="btn" type="button" id="cookie-accept">Accetta</button>
+      <button class="btn" type="button" id="cookie-reject">Rifiuta</button>
       <button class="link-button" type="button" data-open-dialog="cookie-dialog">Cookie policy</button>
+      <button class="link-button" type="button" data-open-dialog="privacy-dialog">Privacy</button>
     </div>
   </section>
 
@@ -783,7 +799,8 @@
       ownerEmail: "info@tpenso.online",                    // ✏️ obbligatorio per il GDPR, es. "privacy@tuodominio.it"
       policyUpdated: "28 ottobre 2026",
       verifiedOn: "28/10/2026",          // data dell'ultima verifica di voti, recensioni e prezzi
-      cookieNoticeVersion: "2026-10-28"
+      cookieNoticeVersion: "2026-10-28-ga", // cambiala se modifichi banner o informative: il banner ricomparirà a tutti
+      gaMeasurementId: ""                // ✏️ ID di Google Analytics 4, es. "G-ABC123XYZ": parte solo dopo il consenso
     };
 
     /* ================================================================
@@ -1252,7 +1269,6 @@
        DA QUI IN POI NON È NECESSARIO MODIFICARE NULLA
        ================================================================ */
     const LIST_KEY = "tipenso-lista";
-    const NOTICE_KEY = "tipenso-cookie-notice";
 
     const $ = function (id) { return document.getElementById(id); };
     const groupLabel = function (id) { const g = GROUPS.find(function (x) { return x.id === id; }); return g ? g.label : id; };
@@ -1762,18 +1778,79 @@
       if (location.hash === "#privacy") openDialog("privacy-dialog");
       if (location.hash === "#cookie") openDialog("cookie-dialog");
     }
+    /* ---------- Consenso cookie e Google Analytics ---------- */
+    // Google Analytics parte solo dopo "Accetta". "Rifiuta" o la X = nessuna statistica.
+    const CONSENT_KEY = "tipenso-cookie-consenso";
+
+    function readConsent() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(CONSENT_KEY) || "null");
+        return saved && saved.version === CONFIG.cookieNoticeVersion ? saved : null;
+      } catch (e) { return null; }
+    }
+    function saveConsent(analytics) {
+      try {
+        localStorage.setItem(CONSENT_KEY, JSON.stringify({ version: CONFIG.cookieNoticeVersion, analytics: analytics, date: new Date().toISOString().slice(0, 10) }));
+        localStorage.removeItem("tipenso-cookie-notice");
+      } catch (e) { /* memoria non disponibile */ }
+    }
+    function loadAnalytics() {
+      const id = String(CONFIG.gaMeasurementId || "").trim();
+      if (!id || window.gtag) return;
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("consent", "default", { analytics_storage: "granted", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" });
+      window.gtag("js", new Date());
+      window.gtag("config", id, { allow_google_signals: false, allow_ad_personalization_signals: false });
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = "https://www.googletagmanager.com/gtag/js?id=" + encodeURIComponent(id);
+      document.head.appendChild(script);
+    }
+    function removeAnalyticsCookies() {
+      const host = location.hostname;
+      const domains = ["", host, "." + host, "." + host.replace(/^www\./, "")];
+      document.cookie.split(";").forEach(function (c) {
+        const name = c.split("=")[0].trim();
+        if (!/^_ga/.test(name)) return;
+        domains.forEach(function (d) { document.cookie = name + "=; Max-Age=0; path=/" + (d ? "; domain=" + d : ""); });
+      });
+    }
     function setupCookieBanner() {
-      let seen = null;
-      try { seen = localStorage.getItem(NOTICE_KEY); } catch (e) { /* memoria non disponibile */ }
-      if (seen === CONFIG.cookieNoticeVersion) return;
       const banner = $("cookie-banner");
-      banner.hidden = false;
-      function dismiss() {
-        try { localStorage.setItem(NOTICE_KEY, CONFIG.cookieNoticeVersion); } catch (e) { /* ignora */ }
+      const consent = readConsent();
+      if (consent && consent.analytics) loadAnalytics();
+      if (!consent) banner.hidden = false;
+
+      function choose(analytics) {
+        const before = readConsent();
+        saveConsent(analytics);
         banner.hidden = true;
+        if (analytics) loadAnalytics();
+        else if (before && before.analytics) { removeAnalyticsCookies(); location.reload(); } // revoca: ferma Analytics
       }
-      $("cookie-ok").addEventListener("click", dismiss);
-      $("cookie-close").addEventListener("click", dismiss);
+      $("cookie-accept").addEventListener("click", function () { choose(true); });
+      $("cookie-reject").addEventListener("click", function () { choose(false); });
+      $("cookie-close").addEventListener("click", function () {
+        if (readConsent()) banner.hidden = true; else choose(false);
+      });
+
+      document.addEventListener("click", function (e) {
+        // "Preferenze cookie": riapre il banner per cambiare scelta
+        if (e.target.closest("[data-cookie-prefs]")) {
+          document.querySelectorAll(".policy[open]").forEach(function (d) { d.close(); });
+          banner.hidden = false;
+          $("cookie-accept").focus();
+          return;
+        }
+        // Clic sui prodotti: in Analytics compare l'evento "clic_amazon" con il nome del prodotto
+        const link = e.target.closest('a[rel~="sponsored"]');
+        if (link && window.gtag) {
+          const card = link.closest("article, .card");
+          const title = card && card.querySelector("h3");
+          window.gtag("event", "clic_amazon", { prodotto: (title ? title.textContent : link.textContent).trim().slice(0, 100) });
+        }
+      });
     }
 
     /* ---------- Avvio ---------- */
