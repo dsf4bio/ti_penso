@@ -9,7 +9,7 @@
 
 import { readFileSync, writeFileSync } from "node:fs";
 
-// ✏️ Indirizzo definitivo del sito, con la barra finale (es. "https://www.fiocco.it/").
+// ✏️ Indirizzo definitivo del sito, con la barra finale (es. "https://www.tipenso.it/").
 // Finché è vuoto, canonical, anteprime social complete e sitemap non vengono generati.
 const SITE_URL = "";
 
@@ -45,7 +45,7 @@ const ORDERED = curatedOrder(PRODUCTS);
 // ---------- Schede statiche ----------
 const cards = ORDERED.map((p) => [
   `<article class="card" id="p-${esc(p.id)}">`,
-  `<div class="media"><div class="gallery"><img src="${esc(imageUrl(p.images[0], 600))}" alt="${esc(p.title)}" loading="lazy" width="600" height="600" referrerpolicy="no-referrer"></div>${p.pick ? `<span class="ribbon">Scelta Fiocco</span>` : ""}</div>`,
+  `<div class="media"><div class="gallery"><img src="${esc(imageUrl(p.images[0], 600))}" alt="${esc(p.title)}" loading="lazy" width="600" height="600" referrerpolicy="no-referrer"></div>${p.pick ? `<span class="ribbon">Scelta Ti penso</span>` : ""}</div>`,
   `<div class="body">`,
   `<div class="meta"><span class="pill">${esc(groupLabel(p.group))}</span></div>`,
   `<h3>${esc(p.title)}</h3>`,
@@ -63,7 +63,7 @@ const faqs = [...html.matchAll(/<details>\s*<summary>([\s\S]*?)<\/summary>\s*<p>
 // ---------- Dati strutturati ----------
 const base = SITE_URL || "";
 const graph = [
-  { "@type": "WebSite", name: "Fiocco", inLanguage: "it-IT", ...(base ? { "@id": base + "#website", url: base } : {}),
+  { "@type": "WebSite", name: "Ti penso", inLanguage: "it-IT", ...(base ? { "@id": base + "#website", url: base } : {}),
     description: "Idee regalo scelte tra i best seller di Amazon.it, per ogni persona e ogni budget." },
   { "@type": "ItemList", name: "Idee regalo Natale 2026: i best seller più amati su Amazon.it", numberOfItems: ORDERED.length,
     itemListElement: ORDERED.map((p, i) => ({ "@type": "ListItem", position: i + 1, name: p.title,
@@ -75,11 +75,11 @@ if (faqs.length) {
 const jsonld = `  <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`;
 
 // ---------- Meta e anteprime social ----------
-const title = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "Fiocco";
+const title = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "Ti penso";
 const description = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || "";
 const meta = [
   `  <meta property="og:type" content="website">`,
-  `  <meta property="og:site_name" content="Fiocco">`,
+  `  <meta property="og:site_name" content="Ti penso">`,
   `  <meta property="og:locale" content="it_IT">`,
   `  <meta property="og:title" content="${esc(title)}">`,
   `  <meta property="og:description" content="${esc(description)}">`,
@@ -87,10 +87,10 @@ const meta = [
   ...(base ? [
     `  <link rel="canonical" href="${esc(base)}">`,
     `  <meta property="og:url" content="${esc(base)}">`,
-    `  <meta property="og:image" content="${esc(base)}img/og-fiocco.jpg">`,
+    `  <meta property="og:image" content="${esc(base)}img/og-tipenso.jpg">`,
     `  <meta property="og:image:width" content="1200">`,
     `  <meta property="og:image:height" content="630">`,
-  ] : [`  <meta property="og:image" content="img/og-fiocco.jpg">`]),
+  ] : [`  <meta property="og:image" content="img/og-tipenso.jpg">`]),
 ].join("\n");
 
 function between(start, end, content) {
