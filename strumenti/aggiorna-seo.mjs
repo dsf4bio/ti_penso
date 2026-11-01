@@ -62,10 +62,22 @@ const faqs = [...html.matchAll(/<details>\s*<summary>([\s\S]*?)<\/summary>\s*<p>
 
 // ---------- Dati strutturati ----------
 const base = SITE_URL || "";
+const today = new Date().toISOString().slice(0, 10);
+const pageTitle = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "Ti penso";
+const pageDescription = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || "";
 const graph = [
-  { "@type": "WebSite", name: "Ti penso", inLanguage: "it-IT", ...(base ? { "@id": base + "#website", url: base } : {}),
+  { "@type": "WebSite", name: "Ti penso", alternateName: ["TiPenso", "tpenso.online"], inLanguage: "it-IT",
+    ...(base ? { "@id": base + "#website", url: base, publisher: { "@id": base + "#organization" } } : {}),
     description: "Idee regalo scelte tra i best seller di Amazon.it, per ogni persona e ogni budget." },
-  { "@type": "ItemList", name: "Idee regalo Natale 2026: i best seller più amati su Amazon.it", numberOfItems: ORDERED.length,
+  ...(base ? [
+    { "@type": "Organization", "@id": base + "#organization", name: "Ti penso", url: base,
+      logo: { "@type": "ImageObject", url: base + "icone/icona-512.png", width: 512, height: 512 } },
+    { "@type": "WebPage", "@id": base + "#webpage", url: base, name: pageTitle, description: pageDescription,
+      inLanguage: "it-IT", isPartOf: { "@id": base + "#website" }, about: { "@id": base + "#itemlist" },
+      primaryImageOfPage: { "@type": "ImageObject", url: base + "img/og-tipenso.jpg", width: 1200, height: 630 },
+      dateModified: today },
+  ] : []),
+  { "@type": "ItemList", ...(base ? { "@id": base + "#itemlist" } : {}), name: "Idee regalo Natale 2026: i best seller più amati su Amazon.it", numberOfItems: ORDERED.length,
     itemListElement: ORDERED.map((p, i) => ({ "@type": "ListItem", position: i + 1, name: p.title,
       ...(base ? { url: base + "#p-" + p.id } : {}), image: imageUrl(p.images[0], 600) })) },
 ];
@@ -75,8 +87,9 @@ if (faqs.length) {
 const jsonld = `  <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c")}</script>`;
 
 // ---------- Meta e anteprime social ----------
-const title = (html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "Ti penso";
-const description = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || "";
+const title = pageTitle;
+const description = pageDescription;
+const ogAlt = "Ti penso: idee regalo per Natale 2026 tra i best seller di Amazon.it";
 const meta = [
   `  <meta property="og:type" content="website">`,
   `  <meta property="og:site_name" content="Ti penso">`,
@@ -84,12 +97,18 @@ const meta = [
   `  <meta property="og:title" content="${esc(title)}">`,
   `  <meta property="og:description" content="${esc(description)}">`,
   `  <meta name="twitter:card" content="summary_large_image">`,
+  `  <meta name="twitter:title" content="${esc(title)}">`,
+  `  <meta name="twitter:description" content="${esc(description)}">`,
   ...(base ? [
     `  <link rel="canonical" href="${esc(base)}">`,
     `  <meta property="og:url" content="${esc(base)}">`,
     `  <meta property="og:image" content="${esc(base)}img/og-tipenso.jpg">`,
     `  <meta property="og:image:width" content="1200">`,
     `  <meta property="og:image:height" content="630">`,
+    `  <meta property="og:image:type" content="image/jpeg">`,
+    `  <meta property="og:image:alt" content="${esc(ogAlt)}">`,
+    `  <meta name="twitter:image" content="${esc(base)}img/og-tipenso.jpg">`,
+    `  <meta name="twitter:image:alt" content="${esc(ogAlt)}">`,
   ] : [`  <meta property="og:image" content="img/og-tipenso.jpg">`]),
 ].join("\n");
 
@@ -105,7 +124,6 @@ html = html.replace(/<p class="hero-lead">\d+ idee/, `<p class="hero-lead">${PRO
 writeFileSync(page, html);
 
 // ---------- robots.txt e sitemap.xml ----------
-const today = new Date().toISOString().slice(0, 10);
 writeFileSync("robots.txt", "User-agent: *\nAllow: /\n" + (base ? `\nSitemap: ${base}sitemap.xml\n` : ""));
 if (base) {
   writeFileSync("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${base}</loc>\n    <lastmod>${today}</lastmod>\n  </url>\n</urlset>\n`);
