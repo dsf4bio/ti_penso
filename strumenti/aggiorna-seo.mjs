@@ -11,7 +11,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 // ✏️ Indirizzo definitivo del sito, con la barra finale (es. "https://www.tipenso.it/").
 // Finché è vuoto, canonical, anteprime social complete e sitemap non vengono generati.
-const SITE_URL = "";
+const SITE_URL = "https://www.tpenso.online/";
 
 const page = "index.html";
 let html = readFileSync(page, "utf8");
