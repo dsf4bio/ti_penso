@@ -1,10 +1,12 @@
-// Aggiorna le parti di index.html che servono a Google e ai social, partendo da PRODUCTS:
-// - schede prodotto scritte nell'HTML (tra <!-- PRODOTTI:INIZIO --> e <!-- PRODOTTI:FINE -->)
+// Aggiorna le parti di index.html che servono a Google e ai social, leggendo le schede prodotto
+// scritte a mano nell'HTML (tra <!-- PRODOTTI:INIZIO --> e <!-- PRODOTTI:FINE -->):
 // - meta canonical e anteprime social (tra <!-- SEO:META:INIZIO --> e <!-- SEO:META:FINE -->)
 // - dati strutturati JSON-LD: sito, elenco prodotti e domande frequenti
-// - robots.txt e sitemap.xml
+// - numero di idee nel testo in alto, robots.txt e sitemap.xml
 //
-// Da lanciare dalla cartella del sito, ogni volta che modifichi i prodotti:
+// Le schede e i link affiliati NON vengono toccati: si modificano solo a mano in index.html.
+//
+// Da lanciare dalla cartella del sito, dopo aver aggiunto o tolto prodotti:
 //   node strumenti/aggiorna-seo.mjs
 
 import { readFileSync, writeFileSync } from "node:fs";
@@ -22,39 +24,55 @@ function readConst(name) {
   return new Function("return " + match[1])();
 }
 
-const CONFIG = readConst("CONFIG");
 const GROUPS = readConst("GROUPS");
-const BUDGETS = readConst("BUDGETS");
-const PRODUCTS = readConst("PRODUCTS");
-
 const esc = (v) => String(v ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-const groupLabel = (id) => GROUPS.find((g) => g.id === id)?.label || id;
-const budgetOf = (price) => BUDGETS.find((b) => price >= b.min && price < b.max);
-const imageUrl = (code, px) => `https://m.media-amazon.com/images/I/${code}._AC_SL${px}_.jpg`;
-const affiliateUrl = (p) => `https://www.amazon.it/dp/${p.asin}?tag=${encodeURIComponent(CONFIG.affiliateTag)}`;
 
-// Stesso ordine della pagina: alterna le categorie
+// ---------- Prodotti letti dalle schede HTML ----------
+const gridHtml = (html.match(/<!-- PRODOTTI:INIZIO -->([\s\S]*?)<!-- PRODOTTI:FINE -->/) || [])[1];
+if (gridHtml === undefined) throw new Error("Non trovo i segnaposto PRODOTTI:INIZIO / PRODOTTI:FINE");
+const unesc = (v) => String(v ?? "").replace(/<[^>]+>/g, "").replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;/g, "'").replace(/&amp;/g, "&").trim();
+const PRODUCTS = [...gridHtml.matchAll(/<article\b([^>]*)>([\s\S]*?)<\/article>/g)].map((m) => {
+  const attr = (name) => (m[1].match(new RegExp(name + '="([^"]*)"')) || [])[1] || "";
+  const body = m[2];
+  const href = unesc((body.match(/<a class="btn" href="([^"]*)"/) || [])[1]);
+  return {
+    id: attr("id").replace(/^p-/, ""),
+    group: attr("data-group"),
+    price: attr("data-price"),
+    title: unesc((body.match(/<h3[^>]*>([\s\S]*?)<\/h3>/) || [])[1]),
+    image: unesc((body.match(/<img[^>]*\ssrc="([^"]*)"/) || [])[1]),
+    href,
+  };
+});
+
+// Controlli: segnala i problemi più comuni nelle schede scritte a mano
+const problems = [];
+const seen = new Set();
+PRODUCTS.forEach((p, i) => {
+  const who = p.title || p.id || "scheda n. " + (i + 1);
+  if (!p.id) problems.push(`${who}: manca id="p-..."`);
+  else if (seen.has(p.id)) problems.push(`${who}: id "p-${p.id}" usato due volte`);
+  seen.add(p.id);
+  if (!GROUPS.some((g) => g.id === p.group)) problems.push(`${who}: data-group "${p.group}" non valido (usa ${GROUPS.map((g) => g.id).join(", ")})`);
+  if (!/^\d+(\.\d+)?$/.test(p.price)) problems.push(`${who}: data-price "${p.price}" non valido (es. 49.99)`);
+  if (!p.title) problems.push(`${who}: manca il titolo <h3>`);
+  if (!p.image) problems.push(`${who}: manca la foto <img>`);
+  if (!/^https:\/\/\S+$/.test(p.href)) problems.push(`${who}: link del pulsante mancante o non valido ("${p.href}")`);
+});
+if (problems.length) {
+  console.error("⚠️  Da sistemare in index.html:\n- " + problems.join("\n- "));
+  process.exitCode = 1;
+}
+
+// Stesso ordine della pagina: alterna le categorie (quelle sconosciute in fondo)
 function curatedOrder(list) {
   const buckets = GROUPS.map((g) => list.filter((p) => p.group === g.id));
+  const longest = Math.max(0, ...buckets.map((b) => b.length));
   const out = [];
-  for (let i = 0; out.length < list.length; i++) buckets.forEach((b) => { if (b[i]) out.push(b[i]); });
-  return out;
+  for (let i = 0; i < longest; i++) buckets.forEach((b) => { if (b[i]) out.push(b[i]); });
+  return out.concat(list.filter((p) => !out.includes(p)));
 }
 const ORDERED = curatedOrder(PRODUCTS);
-
-// ---------- Schede statiche ----------
-const cards = ORDERED.map((p) => [
-  `<article class="card" id="p-${esc(p.id)}">`,
-  `<div class="media"><div class="gallery"><img src="${esc(imageUrl(p.images[0], 600))}" alt="${esc(p.title)}" loading="lazy" width="600" height="600" referrerpolicy="no-referrer"></div>${p.pick ? `<span class="ribbon">Scelta Ti penso</span>` : ""}</div>`,
-  `<div class="body">`,
-  `<div class="meta"><span class="pill">${esc(groupLabel(p.group))}</span></div>`,
-  `<h3>${esc(p.title)}</h3>`,
-  `<p class="desc">${esc(p.desc)}</p>`,
-  `<ul class="benefits">${p.benefits.slice(0, 3).map((b) => `<li>${esc(b)}</li>`).join("")}</ul>`,
-  `<div class="actions-row"><a class="btn" href="${esc(affiliateUrl(p))}" target="_blank" rel="sponsored nofollow noopener noreferrer">Vedi su Amazon</a></div>`,
-  `</div>`,
-  `</article>`,
-].join("")).join("\n");
 
 // ---------- Domande frequenti lette dalla pagina ----------
 const faqs = [...html.matchAll(/<details>\s*<summary>([\s\S]*?)<\/summary>\s*<p>([\s\S]*?)<\/p>\s*<\/details>/g)]
@@ -79,7 +97,7 @@ const graph = [
   ] : []),
   { "@type": "ItemList", ...(base ? { "@id": base + "#itemlist" } : {}), name: "Idee regalo Natale 2026: i best seller più amati su Amazon.it", numberOfItems: ORDERED.length,
     itemListElement: ORDERED.map((p, i) => ({ "@type": "ListItem", position: i + 1, name: p.title,
-      ...(base ? { url: base + "#p-" + p.id } : {}), image: imageUrl(p.images[0], 600) })) },
+      ...(base ? { url: base + "#p-" + p.id } : {}), image: p.image })) },
 ];
 if (faqs.length) {
   graph.push({ "@type": "FAQPage", mainEntity: faqs.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) });
@@ -117,7 +135,6 @@ function between(start, end, content) {
   if (!re.test(html)) throw new Error("Non trovo i segnaposto " + start + " / " + end);
   html = html.replace(re, (_, a, b) => a + "\n" + content + "\n" + b);
 }
-between("PRODOTTI:INIZIO", "PRODOTTI:FINE", cards);
 between("SEO:META:INIZIO", "SEO:META:FINE", meta);
 between("SEO:JSONLD:INIZIO", "SEO:JSONLD:FINE", jsonld);
 html = html.replace(/<p class="hero-lead">\d+ idee/, `<p class="hero-lead">${PRODUCTS.length} idee`);
@@ -129,4 +146,4 @@ if (base) {
   writeFileSync("sitemap.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${base}</loc>\n    <lastmod>${today}</lastmod>\n  </url>\n</urlset>\n`);
 }
 
-console.log(`Aggiornati ${PRODUCTS.length} prodotti, ${faqs.length} domande frequenti, meta e robots.txt` + (base ? " e sitemap.xml." : ". (Sitemap non creata: SITE_URL è vuoto.)"));
+console.log(`Letti ${PRODUCTS.length} prodotti (schede e link non modificati): aggiornati, ${faqs.length} domande frequenti, meta e robots.txt` + (base ? " e sitemap.xml." : ". (Sitemap non creata: SITE_URL è vuoto.)"));
