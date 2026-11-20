@@ -34,13 +34,17 @@ const unesc = (v) => String(v ?? "").replace(/<[^>]+>/g, "").replace(/&quot;/g, 
 const PRODUCTS = [...gridHtml.matchAll(/<article\b([^>]*)>([\s\S]*?)<\/article>/g)].map((m) => {
   const attr = (name) => (m[1].match(new RegExp(name + '="([^"]*)"')) || [])[1] || "";
   const body = m[2];
-  const href = unesc((body.match(/<a class="btn" href="([^"]*)"/) || [])[1]);
+  const rawHref = (body.match(/<a class="btn" href="([^"]*)"/) || [])[1] ?? "";
+  const href = unesc(rawHref);
   return {
     id: attr("id").replace(/^p-/, ""),
     group: attr("data-group"),
     price: attr("data-price"),
     title: unesc((body.match(/<h3[^>]*>([\s\S]*?)<\/h3>/) || [])[1]),
     image: unesc((body.match(/<img[^>]*\ssrc="([^"]*)"/) || [])[1]),
+    emptyImages: (body.match(/<img[^>]*\ssrc=""/g) || []).length,
+    links: (body.match(/<a\s/g) || []).length,
+    rawHref,
     href,
   };
 });
@@ -58,7 +62,13 @@ PRODUCTS.forEach((p, i) => {
   if (!p.title) problems.push(`${who}: manca il titolo <h3>`);
   if (!p.image) problems.push(`${who}: manca la foto <img>`);
   if (!/^https:\/\/\S+$/.test(p.href)) problems.push(`${who}: link del pulsante mancante o non valido ("${p.href}")`);
+  else if (p.rawHref !== p.href) problems.push(`${who}: togli gli spazi prima o dopo il link ("${p.rawHref}")`);
+  if (p.emptyImages) problems.push(`${who}: c'è una foto <img src=""> senza indirizzo`);
+  if (p.links !== 1) problems.push(`${who}: la scheda deve avere un solo link (ne ha ${p.links})`);
 });
+const byHref = new Map();
+PRODUCTS.forEach((p) => { if (p.href) byHref.set(p.href, (byHref.get(p.href) || []).concat(p.title || p.id)); });
+byHref.forEach((who, href) => { if (who.length > 1) problems.push(`stesso link in più schede (${who.join(", ")}): ${href}`); });
 if (problems.length) {
   console.error("⚠️  Da sistemare in index.html:\n- " + problems.join("\n- "));
   process.exitCode = 1;
@@ -95,7 +105,7 @@ const graph = [
       primaryImageOfPage: { "@type": "ImageObject", url: base + "img/og-tipenso.jpg", width: 1200, height: 630 },
       dateModified: today },
   ] : []),
-  { "@type": "ItemList", ...(base ? { "@id": base + "#itemlist" } : {}), name: "Idee regalo Natale 2026: i best seller più amati su Amazon.it", numberOfItems: ORDERED.length,
+  { "@type": "ItemList", ...(base ? { "@id": base + "#itemlist" } : {}), name: "Idee regalo di Natale 2026 e offerte Black Friday: i best seller di Amazon.it", numberOfItems: ORDERED.length,
     itemListElement: ORDERED.map((p, i) => ({ "@type": "ListItem", position: i + 1, name: p.title,
       ...(base ? { url: base + "#p-" + p.id } : {}), image: p.image })) },
 ];
@@ -107,7 +117,7 @@ const jsonld = `  <script type="application/ld+json">${JSON.stringify({ "@contex
 // ---------- Meta e anteprime social ----------
 const title = pageTitle;
 const description = pageDescription;
-const ogAlt = "Ti penso: idee regalo per Natale 2026 tra i best seller di Amazon.it";
+const ogAlt = "Ti penso: idee regalo di Natale 2026 e offerte Black Friday tra i best seller di Amazon.it";
 const meta = [
   `  <meta property="og:type" content="website">`,
   `  <meta property="og:site_name" content="Ti penso">`,
